@@ -9,71 +9,21 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
+import fncs_prjct as fn
 
 data = np.load("proyecto_training_data.npy")
+
+entrenamiento = data[0:1168]
+pruebas = data[1169:1460]
+
 data = pd.DataFrame(data)
+columnas_df = fn.select_col_numerics(data)
+data_desc = data.describe()
+suma_data_null = data.isnull().sum()
+mean_data_null = data.isnull().mean()
 
-def getContinuesCols(df):
-    colnames = df.columns
-    numeric_continues_vars = []
-    for col in colnames:
-        unique_values =len (df[col].unique())
-        if((df[col].dtype != 'object') and (unique_values > 0)):
-            numeric_continues_vars.append(col)
-    return numeric_continues_vars
 
-analizar = getContinuesCols(data)
-
-def plot_density(df, variable):
-    sns.set_theme(); 
-    x = df[variable]
-    ax = sns.distplot(x)
+for col in columnas_df:
+    fn.plot_reg_dens(data, 0, col)   
     
-for col in analizar:
-        plot_density(data, col)
-
-data[0].describe()
-data[1].describe()
-data[2].describe()
-data[3].describe()
-data[4].describe()
-data[5].describe()
-
-
-
-data[0].isnull().sum()
-data[1].isnull().sum()
-data[2].isnull().sum()
-data[3].isnull().sum()
-data[4].isnull().sum()
-
-data[5].isnull().sum()
-data[5].isnull().mean()
-
-
-
-sns.set_theme(); 
-x = data[0]
-ax = sns.distplot(x)
-
-sns.set_theme(); 
-x = data[1]
-ax = sns.distplot(x)
-
-sns.set_theme(); 
-x = data[2]
-ax = sns.distplot(x)
-
-sns.set_theme(); 
-x = data[3]
-ax = sns.distplot(x)
-
-sns.set_theme(); 
-x = data[4]
-ax = sns.distplot(x)
-
-sns.set_theme(); 
-x = data[5]
-ax = sns.distplot(x)
-
 
