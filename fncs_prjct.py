@@ -9,10 +9,14 @@ import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
 
-def graficar_data_densidad(df, col):
+
+def graficar_data_densidad(df, col1):
     sns.set_theme();
-    x = df[col]
+    x = df[col1]
     ax = sns.distplot(x)
+    plt.title("Densidad-Histograma: " + str(col1))
+    plt.show()
+
 
 
 def select_col_numerics(df):
@@ -23,6 +27,9 @@ def select_col_numerics(df):
         if((df[col].dtype != 'object') and (unique_values > 0)):
             numeric_continues_vars.append(col)
     return numeric_continues_vars    
+
+
+
 
 def plot_reg_dens(df, col1, col2):    
     plt.figure(figsize = (15,6))
@@ -43,3 +50,4 @@ def plot_reg_dens(df, col1, col2):
     plt.plot(varx,p(varx), "r--")
     plt.title("Regresion : " + str(col1))
     plt.show()
+
