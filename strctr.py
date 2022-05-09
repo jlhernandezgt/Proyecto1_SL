@@ -37,6 +37,13 @@ tr_mn_null = training.isnull().mean()
 
 ## histograma variable
 for col in columnas_df:
-    fn.graficar_data_densidad(training, col)  
-
+    fn.graficar_data_densidad(training, col) 
     
+    
+correlacion = training.corr()
+
+fn.plot_regresion_top2(training,0,1,2)
+
+
+
+

@@ -51,3 +51,32 @@ def plot_reg_dens(df, col1, col2):
     plt.title("Regresion : " + str(col1))
     plt.show()
 
+
+def plot_regresion_top2(df, col1, col2, col3):
+    correlacion = df.corr()
+    a = round(correlacion.iloc[0,1],5)
+    b = round(correlacion.iloc[0,2],5)
+    
+    plt.figure(figsize = (16,6))
+    
+    #plt.subplot(121)
+    fig, ax = plt.subplots()
+    varx = df[col2]
+    vary = df[col1]
+    ax.scatter(varx, vary)
+    z = np.polyfit(varx, vary, 1)
+    p = np.poly1d(z)
+    plt.plot(varx,p(varx), "r--")
+    plt.title("Coeficiente de Correlacion 1 y 0: " + str(a))
+    plt.show()
+
+    #plt.subplot(122)
+    fig, ax = plt.subplots()
+    varx = df[col3]
+    vary = df[col1]
+    ax.scatter(varx, vary)
+    z = np.polyfit(varx, vary, 1)
+    p = np.poly1d(z)
+    plt.plot(varx,p(varx), "r--")
+    plt.title("Coeficiente de Correlacion 2 y 0: " + str(b))
+    plt.show()
