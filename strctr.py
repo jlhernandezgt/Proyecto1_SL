@@ -13,6 +13,7 @@ import fncs_prjct as fn
 
 data = np.load("proyecto_training_data.npy")
 data = pd.DataFrame(data)
+data.rename(columns={0: "SalePrice", 1: "OverallQual", 2: "1stFlrSF", 3: "TotRmsAbvGrd", 4: "YearBuilt", 5: "LotFrontage"}, inplace = True)
 
 ### slicing
 training = pd.DataFrame(data[0:1168])
@@ -26,7 +27,7 @@ suma_data_null = data.isnull().sum()
 mean_data_null = data.isnull().mean()
 
 for col in columnas_df:
-    fn.plot_reg_dens(data, 0, col)   
+    fn.plot_reg_dens(data, 'SalePrice', col)   
 
     
 ###  analisis exploratorio data entrenamiento
@@ -41,8 +42,12 @@ for col in columnas_df:
     
     
 correlacion = training.corr()
+sns.heatmap(training.corr(method = "pearson"), annot=True, cmap = "PuBu")
 
-fn.plot_regresion_top2(training,0,1,2)
+fn.plot_regresion_top2(training,'SalePrice','OverallQual','1stFlrSF')
+
+
+
 
 
 

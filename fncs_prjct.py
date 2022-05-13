@@ -41,10 +41,10 @@ def plot_reg_dens(df, col1, col2):
     plt.title("Densidad-Histograma: " + str(col1))
     
     plt.subplot(122)
-    fig, ax = plt.subplots()
+    fig, ay = plt.subplots()
     varx = df[col2]
     vary = df[col1]
-    ax.scatter(varx, vary)
+    ay.scatter(varx, vary)
     z = np.polyfit(varx, vary, 1)
     p = np.poly1d(z)
     plt.plot(varx,p(varx), "r--")
@@ -80,3 +80,43 @@ def plot_regresion_top2(df, col1, col2, col3):
     plt.plot(varx,p(varx), "r--")
     plt.title("Coeficiente de Correlacion 2 y 0: " + str(b))
     plt.show()
+    
+
+
+"""
+variableX = training['OverallQual']
+variableY = training['SalePrice']
+sumaX = variableX.sum()
+sumaY = variableY.sum()
+promedioX = variableX.mean()
+promedioY = variableY.mean()
+xy = variableX*variableY
+x2 = variableX**2
+numerador = xy.sum()-len(variableX)*promedioX*promedioY
+denominador = x2.sum()-len(variableX)*promedioX**2
+beta1 = numerador/denominador
+beta0 = promedioY-beta1*promedioX
+
+
+a = 2
+b = 2
+epoch = 100
+learning_rate = 0.01
+imprimir_error_cada = 10
+"""
+
+def training_model(vx, vy, b0, b1):
+    n = len(vx)
+    resultados = {}
+    for i in range(n):
+        y_estimado = b0+b1*vx[i]
+        error_estimado = (vy[i] - y_estimado) 
+        vc = 1 / (2*len(variableX))
+        error = vc * error_estimado**2
+        evento = i
+        resultados[evento] = vx[i], vy[i], y_estimado, error_estimado, error, b0, b1
+    return(resultados)
+
+training_model(variableX[0:10], variableY[0:10], a, b)
+
+
