@@ -8,7 +8,7 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
-
+from sklearn.metrics import mean_squared_error
 
 def graficar_data_densidad(df, col1):
     sns.set_theme();
@@ -83,7 +83,7 @@ def plot_regresion_top2(df, col1, col2, col3):
     
 
 
-"""
+
 variableX = training['OverallQual']
 variableY = training['SalePrice']
 sumaX = variableX.sum()
@@ -100,10 +100,10 @@ beta0 = promedioY-beta1*promedioX
 
 a = 2
 b = 2
-epoch = 100
+epoch = 1000
 learning_rate = 0.01
 imprimir_error_cada = 10
-"""
+
 
 def training_model(vx, vy, b0, b1):
     n = len(vx)
@@ -117,6 +117,53 @@ def training_model(vx, vy, b0, b1):
         resultados[evento] = vx[i], vy[i], y_estimado, error_estimado, error, b0, b1
     return(resultados)
 
-training_model(variableX[0:10], variableY[0:10], a, b)
+
+
+a = 2
+b = 2
+epoch = 75000
+learning_rate = 0.01
+imprimir_error_cada = 10
+
+def gradiant_training(vx, vy, b0, b1, alpha, epochs):
+    n = len(vx)
+    g_a = np.array([])
+    g_b = np.array([])
+    g_f = np.column_stack((g_a,g_b))
+    ayb = []
+    rmse = []
+    valores_reales = []
+    estimaciones = []
+    resultados = {}
+    
+    for i in range(epochs):
+        y_estimado = b0+b1*vx
+        g_a = 1/n * np.sum((y_estimado - vy))
+        g_b = 1/n * np.sum((y_estimado - vy)*vx)
+        b0 = b0-alpha*g_a
+        b1 = b1-alpha*g_b
+        g_a = np.append(g_a, [g_a])
+        g_b = np.append(g_b, [g_b])
+        ayb.append((b0, b1))
+        #rmse.append(mean_squared_error(vy, y_estimado, squared = False))
+    estimaciones.append(y_estimado)
+    valores_reales.append((vy))
+    resultados[epochs] = ((b0,b1))
+    return b0, b1, resultados, ayb, estimaciones, valores_reales
+            
+        
+        
+        
+beta0, beta1, resultado_gen, ayb, estimaciones_g, vr = gradiant_training(vx = variableX, vy = variableY, b0 = a, b1 = b, alpha = learning_rate, epochs=epoch)       
+        
+        
+
+b0  -96469.57131873941      
+b1  45411.99877915908
+        
+        
+        
+        
+
 
 

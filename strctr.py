@@ -49,6 +49,6 @@ fn.plot_regresion_top2(training,'SalePrice','OverallQual','1stFlrSF')
 
 
 
-
+training_model(variableX[0:10], variableY[0:10], a, b)
 
 
