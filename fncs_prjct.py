@@ -145,25 +145,39 @@ def gradiant_training(vx, vy, b0, b1, alpha, epochs):
         g_a = np.append(g_a, [g_a])
         g_b = np.append(g_b, [g_b])
         ayb.append((b0, b1))
-        #rmse.append(mean_squared_error(vy, y_estimado, squared = False))
+        ### sumatoria de yesti - y elev al cuadr partido n
+        rms = np.sqrt(np.mean((y_estimado - vy)**2))
+        rmse.append(rms)     
+                
     estimaciones.append(y_estimado)
     valores_reales.append((vy))
     resultados[epochs] = ((b0,b1))
-    return b0, b1, resultados, ayb, estimaciones, valores_reales
+    return b0, b1, resultados, ayb, rmse, estimaciones, valores_reales
             
         
         
         
-beta0, beta1, resultado_gen, ayb, estimaciones_g, vr = gradiant_training(vx = variableX, vy = variableY, b0 = a, b1 = b, alpha = learning_rate, epochs=epoch)       
+beta0, beta1, resultado_gen, ayb, rmse, estimaciones_g, vr = gradiant_training(vx = variableX, vy = variableY, b0 = a, b1 = b, alpha = learning_rate, epochs=epoch)       
         
-        
+training_model(variableX[0:10], variableY[0:10], beta0, beta1)      
 
-b0  -96469.57131873941      
-b1  45411.99877915908
-        
-        
-        
-        
+ 
 
+        
+plt.scatter(estimaciones_g, vr)
+plt.xlabel("Estimaciones")
+plt.ylabel("Valores reales")
+plt.title("Dispersión entre las estimaciones y valores reales")      
+
+
+
+plt.figure(figsize = (16,3))
+plt.plot(rmse)
+plt.title('Gradientes', fontSize = 14)
+plt.xlabel('epochs')
+plt.ylabel('RMSE')
+plt.show()  
+        
+        
 
 
