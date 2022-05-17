@@ -119,8 +119,8 @@ def training_model(vx, vy, b0, b1):
 
 
 
-a = 2
-b = 2
+a = 3
+b = 3
 epoch = 75000
 learning_rate = 0.01
 imprimir_error_cada = 10
@@ -161,23 +161,66 @@ beta0, beta1, resultado_gen, ayb, rmse, estimaciones_g, vr = gradiant_training(v
         
 training_model(variableX[0:10], variableY[0:10], beta0, beta1)      
 
- 
 
-        
-plt.scatter(estimaciones_g, vr)
+
+x = estimaciones_g
+y = vr        
+plt.scatter(x,y, color = '#88c999')
 plt.xlabel("Estimaciones")
 plt.ylabel("Valores reales")
 plt.title("Dispersión entre las estimaciones y valores reales")      
 
 
 
-plt.figure(figsize = (16,3))
-plt.plot(rmse)
-plt.title('Gradientes', fontSize = 14)
-plt.xlabel('epochs')
-plt.ylabel('RMSE')
-plt.show()  
+plt.scatter(variableX, variableY)
+pred_x = [1, max(variableX)]
+pred_y = [beta0 + beta1*0, beta0+beta1*max(variableX)]
+plt.plot(pred_x, pred_y, 'r')
+plt.xlabel('OverallQual')
+plt.ylabel('SalePrice')
+plt.title('Prediccion de ventas con ' + str(epoch) + " iteraciones")
+plt.show()
+
+
+ def fn_plt_error (df):
+    plt.figure(figsize = (16,3))
+    plt.plot(df, 'm--')
+    plt.title('Evolución Error Mínimo', fontSize = 16)
+    plt.xlabel('Iteracion')
+    plt.ylabel('RMSE')
+    plt.annotate('Inicio Regulacion Error Miimo', xy=(200, 50000), xytext=(4000, 50000),
+            arrowprops=dict(facecolor='blue', shrink=0.05),
+            )
+    plt.show()  
         
-        
+fn_plt_error(rmse) 
+
+
+
+from sklearn.linear_model import LinearRegression
+from sklearn.metrics import mean_squared_error, r2_score
+from sklearn.model_selection import train_test_split
+
+
+sk_training = pd.DataFrame(data[0:1168])
+sk_test = pd.DataFrame(data[1169:1460])
+sk_variableX = training['OverallQual']
+sk_variableY = training['SalePrice']
+
+sk_variableX = np.array(sk_variableX).reshape(-1,1)
+sk_variableY = np.array(sk_variableY).reshape(-1,1)
+
+
+rl = LinearRegression()
+rl.fit(sk_variableX, sk_variableY)
+
+prueba = rl.predict(sk_variableX)
+
+print("Validacion de Intercepto modelo SKL ", rl.intercept_,
+      "VS Validacion de Beta0 Modelo Manual", beta0)
+print("Validacion de Coeficiente modelo SKL ", rl.coef_,
+      "VS Validacion de Beta1 Modelo Manual", beta1)
+print("Validacion de RMSE modelo SKL ", mean_squared_error(sk_variableY, prueba, squared = False),
+      "VS Validacion de RMSE Modelo Manual", rmse[-1])
 
 

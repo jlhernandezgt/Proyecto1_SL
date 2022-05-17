@@ -4,3 +4,4 @@ proyecto_data.zip
 p1_explore.ipynb
 .ipynb_checkpoints
 .spyproject
+__pycache__
