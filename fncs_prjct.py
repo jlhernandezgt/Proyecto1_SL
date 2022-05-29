@@ -8,14 +8,18 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
-from sklearn.metrics import mean_squared_error
+from sklearn.linear_model import LinearRegression
+from sklearn.metrics import mean_squared_error, r2_score
+
+
 
 def graficar_data_densidad(df, col1):
-    sns.set_theme();
+    sns.set_style("dark")
     x = df[col1]
-    ax = sns.distplot(x)
+    ax = sns.distplot(x, color ='#20DF97')
     plt.title("Densidad-Histograma: " + str(col1))
     plt.show()
+
 
 
 
@@ -30,27 +34,24 @@ def select_col_numerics(df):
 
 
 
-
+   
 def plot_reg_dens(df, col1, col2):    
-    plt.figure(figsize = (15,6))
     
+    plt.figure(figsize = (15,6))
     plt.subplot(121)
-    sns.set_theme();
+    sns.set_style("dark")
     x = df[col1]
-    ax = sns.distplot(x)
+    ax = sns.distplot(x, color ='#20DF97')
     plt.title("Densidad-Histograma: " + str(col1))
     
     plt.subplot(122)
-    fig, ay = plt.subplots()
-    varx = df[col2]
-    vary = df[col1]
-    ay.scatter(varx, vary)
-    z = np.polyfit(varx, vary, 1)
-    p = np.poly1d(z)
-    plt.plot(varx,p(varx), "r--")
-    plt.title("Regresion : " + str(col1))
+    sns.set_style("dark")
+    sns.regplot(x=col2, y=col1, data=df,color="#BE9ED3");
+    plt.title("Regresion : " + str(col2))
     plt.show()
 
+
+    
 
 def plot_regresion_top2(df, col1, col2, col3):
     correlacion = df.corr()
@@ -59,59 +60,23 @@ def plot_regresion_top2(df, col1, col2, col3):
     
     plt.figure(figsize = (16,6))
     
-    #plt.subplot(121)
     fig, ax = plt.subplots()
     varx = df[col2]
     vary = df[col1]
-    ax.scatter(varx, vary)
-    z = np.polyfit(varx, vary, 1)
-    p = np.poly1d(z)
-    plt.plot(varx,p(varx), "r--")
-    plt.title("Coeficiente de Correlacion 1 y 0: " + str(a))
+    sns.set_style("dark")
+    sns.regplot(x=varx, y=vary, data=df,color="#20DF97");
+    plt.title("Coeficiente de Correlacion OverallQual y SalePrice: " + str(a))
     plt.show()
 
-    #plt.subplot(122)
     fig, ax = plt.subplots()
     varx = df[col3]
     vary = df[col1]
-    ax.scatter(varx, vary)
-    z = np.polyfit(varx, vary, 1)
-    p = np.poly1d(z)
-    plt.plot(varx,p(varx), "r--")
-    plt.title("Coeficiente de Correlacion 2 y 0: " + str(b))
+    sns.set_style("dark")
+    sns.regplot(x=varx, y=vary, data=df,color="#BE9ED3");
+    plt.title("Coeficiente de Correlacion 1stFlrSF y SalePrice: " + str(b))
     plt.show()
     
 
-
-
-variableX = training['OverallQual']
-variableY = training['SalePrice']
-variableXtest = test['OverallQual']
-variableYtest = test['SalePrice']
-
-"""
-sumaX = variableX.sum()
-sumaY = variableY.sum()
-promedioX = variableX.mean()
-promedioY = variableY.mean()
-xy = variableX*variableY
-x2 = variableX**2
-numerador = xy.sum()-len(variableX)*promedioX*promedioY
-denominador = x2.sum()-len(variableX)*promedioX**2
-beta1 = numerador/denominador
-beta0 = promedioY-beta1*promedioX
-"""
-
-xvariable = np.array(variableX)
-yvariable = np.array(variableY)
-xvtest = np.array(variableXtest)
-yvtest = np.array(variableYtest)
-
-a = 2
-b = 2
-epoch = 1000
-learning_rate = 0.01
-imprimir_error_cada = 10
 
 
 def training_model(vx, vy, b0, b1):
@@ -129,13 +94,6 @@ def training_model(vx, vy, b0, b1):
 
 
 
-
-a = 3
-b = 3
-epoch = 75000
-learning_rate = 0.01
-imprimir_error_cada = 10
-
 def gradiant_training(vx, vy, b0, b1, alpha, epochs):
     n = len(vx)
     g_a = np.array([])
@@ -146,6 +104,7 @@ def gradiant_training(vx, vy, b0, b1, alpha, epochs):
     valores_reales = []
     estimaciones = []
     resultados = {}
+    imprimir_error_cada = 10
     
     for i in range(epochs):
         y_estimado = b0+b1*vx
@@ -157,124 +116,89 @@ def gradiant_training(vx, vy, b0, b1, alpha, epochs):
         g_b = np.append(g_b, [g_b])
         ayb.append((b0, b1))
         ### sumatoria de yesti - y elev al cuadr partido n
-        rms = np.sqrt(np.mean((y_estimado - vy)**2))
-        rmse.append(rms)     
+        if((i % imprimir_error_cada)==0):
+            rms = np.sqrt(np.mean((y_estimado - vy)**2))
+        rmse.append(rms)    
                 
     estimaciones.append(y_estimado)
     valores_reales.append((vy))
     resultados[epochs] = ((b0,b1))
     return b0, b1, resultados, ayb, rmse, estimaciones, valores_reales
             
+
         
         
-        
-beta0, beta1, resultado_gen, ayb, rmse, estimaciones_g, vr = gradiant_training(vx = xvariable, vy = yvariable, b0 = a, b1 = b, alpha = learning_rate, epochs=epoch)       
-        
-training_model(xvariable, yvariable , beta0, beta1)  
-training_model(xvtest, yvtest, beta0, beta1)      
+def graf_disper_y_valores_reales(x,y):          
+    plt.scatter(x,y, color = '#20DF97')
+    plt.xlabel("Estimaciones")
+    plt.ylabel("Valores reales")
+    plt.title("Dispersión entre las estimaciones y valores reales")      
 
 
 
-x = estimaciones_g
-y = vr        
-plt.scatter(x,y, color = '#88c999')
-plt.xlabel("Estimaciones")
-plt.ylabel("Valores reales")
-plt.title("Dispersión entre las estimaciones y valores reales")      
+
+def graf_pred_n_epoch(x, y, b0, b1, epochs):
+    plt.scatter(x, y,color = '#20DF97')
+    pred_x = [1, max(x)]
+    pred_y = [b0 + b1*0, b0+b1*max(x)]
+    plt.plot(pred_x, pred_y, 'r')
+    plt.xlabel('OverallQual')
+    plt.ylabel('SalePrice')
+    plt.title('Prediccion de ventas con ' + str(epochs) + " iteraciones")
+    plt.show()
 
 
-
-plt.scatter(xvariable, yvariable)
-pred_x = [1, max(xvariable)]
-pred_y = [beta0 + beta1*0, beta0+beta1*max(xvariable)]
-plt.plot(pred_x, pred_y, 'r')
-plt.xlabel('OverallQual')
-plt.ylabel('SalePrice')
-plt.title('Prediccion de ventas con ' + str(epoch) + " iteraciones")
-plt.show()
 
 
 def fn_plt_error (df):
-    plt.figure(figsize = (16,3))
+    plt.figure(figsize = (16,6))
     plt.plot(df, 'm--')
     plt.title('Evolución Error Mínimo', fontSize = 16)
     plt.xlabel('Iteracion')
     plt.ylabel('RMSE')
-    plt.annotate('Inicio Regulacion Error Miimo', xy=(200, 50000), xytext=(4000, 50000),
+    plt.annotate('Inicio Regulacion Error Miimo', xy=(250, 50000), xytext=(4000, 50000),
             arrowprops=dict(facecolor='blue', shrink=0.05),
             )
     plt.show()  
         
-fn_plt_error(rmse) 
 
 
 
-from sklearn.linear_model import LinearRegression
-from sklearn.metrics import mean_squared_error, r2_score
-
-
-"""
-sk_training = pd.DataFrame(data[0:1168])
-sk_test = pd.DataFrame(data[1169:1460])
-sk_variableX = training['OverallQual']
-sk_variableY = training['SalePrice']
-
-sk_variableX = np.array(sk_variableX).reshape(-1,1)
-sk_variableY = np.array(sk_variableY).reshape(-1,1)
-sk_variableXtest = np.array(sk_variableX).reshape(-1,1)
-sk_variableYtest = np.array(sk_variableY).reshape(-1,1)
-"""
-
-variableX2 = np.array(variableX).reshape(-1,1)
-variableXt2 = np.array(variableXtest).reshape(-1,1)
-variableY2 = np.array(variableY).reshape(-1,1)
-variableYt2 = np.array(variableYtest).reshape(-1,1)
-
-
-### validacion de datos con sklearn
-
-regr = LinearRegression()
-regr.fit(variableX2,yvariable)
-reg_pred = regr.predict(variableXt2)
-
-print("Validacion de Intercepto modelo SKL ", rl.intercept_,
-      "VS Validacion de Beta0 Modelo Manual", beta0)
-print("Validacion de Coeficiente modelo SKL ", rl.coef_,
-      "VS Validacion de Beta1 Modelo Manual", beta1)
-print("Validacion de RMSE modelo SKL ", mean_squared_error(variableY2, prediccion_regresion, squared = False),
-      "VS Validacion de RMSE Modelo Manual", rmse[-1])
+def graf_mdl_vs_skl(xt, yt, pred, vx, b0, b1):
+    plt.scatter(xt, yt, color = '#20DF97')
+    plt.plot(xt, pred, color = 'red', linestyle = 'dashed')
+    pred_x = [1, max(vx)]
+    pred_y = [b0 + b1*0, b0+b1*max(vx)]
+    plt.plot(pred_x, pred_y, color = 'blue', linestyle = 'dashdot')
 
 
 
-plt.scatter(variableXt2, variableYt2, color = 'blue')
-plt.plot(variableXt2, prediccion_regresion2, color = 'red', linestyle = 'dashed')
-pred_x = [1, max(xvariable)]
-pred_y = [beta0 + beta1*0, beta0+beta1*max(xvariable)]
-plt.plot(pred_x, pred_y, color = 'grey', linestyle = 'dashdot')
+
+def df_errores(xt, yt, b0, b1):
+    df = training_model(xt, yt, b0, b1)        
+    df = pd.DataFrame.from_dict(df, orient = 'index')
+    df.rename(columns={0:"X", 1:"Y", 2:"Y_ESTIMADO", 3:"ERROR", 4:"ERROR_CUADRATICO", 5:"BETA0", 6:"BETA1"}, inplace = True)
+    return(df)
 
 
 
-errores = training_model(xvtest, yvtest, beta0, beta1)        
-errores = pd.DataFrame.from_dict(errores, orient = 'index')
-errores.rename(columns={0:"X", 1:"Y", 2:"Y_ESTIMADO", 3:"ERROR", 4:"ERROR_CUADRATICO", 5:"BETA0", 6:"BETA1"}, inplace = True)
+
+def graf_dis_dens_errors_mdls(gy_mdl,  gy_skl):
+    sns.set_style("dark")
+    sns.kdeplot(np.asarray(gy_mdl)[0], label = 'Error Modelo Manual', color = '#BE9ED3')
+    sns.kdeplot(np.array(gy_skl), label = 'Error SKL', color = '#20DF97', linestyle =  '--')
+    plt.title('Distribucion de Error Ambos Modelos')
+    plt.xlabel("Error")
+    plt.ylabel('Distribucion Densidad')
+    plt.legend()
+    plt.show()
 
 
 
-ytest1 = errores['Y']
-yhat1 = errores['Y_ESTIMADO']
-
-grad_y = np.asmatrix(ytest1) - np.asmatrix(yhat1)
-sk_y = yvtest - reg_pred
 
 
-sns.set_style("dark")
-sns.kdeplot(np.asarray(grad_y)[0], label = 'error modelo manual', color = 'red')
-sns.kdeplot(np.array(sk_y), label = 'error skl', color = 'blue', linestyle =  '--')
-plt.title('Distribucion de error ambos modelos')
-plt.xlabel("Error")
-plt.ylabel('Distribucion Densidad')
-plt.legend()
-plt.show()
+
+
 
 
 

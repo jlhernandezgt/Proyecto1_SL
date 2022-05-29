@@ -5,3 +5,5 @@ p1_explore.ipynb
 .ipynb_checkpoints
 .spyproject
 __pycache__
+help.py
+__pycache__
