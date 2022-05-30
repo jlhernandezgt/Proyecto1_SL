@@ -12,7 +12,7 @@ from sklearn.linear_model import LinearRegression
 from sklearn.metrics import mean_squared_error, r2_score
 
 
-
+###  Funcion para graficar densidad de los datos del dataset
 def graficar_data_densidad(df, col1):
     sns.set_style("dark")
     x = df[col1]
@@ -23,6 +23,7 @@ def graficar_data_densidad(df, col1):
 
 
 
+### Funcion para detectar variables numericas del dataset
 def select_col_numerics(df):
     colnames = df.columns
     numeric_continues_vars = []
@@ -34,7 +35,8 @@ def select_col_numerics(df):
 
 
 
-   
+### Funcion para graficar la densidad y la regresion lineal de los datos 
+### numericos  del dataset
 def plot_reg_dens(df, col1, col2):    
     
     plt.figure(figsize = (15,6))
@@ -53,6 +55,7 @@ def plot_reg_dens(df, col1, col2):
 
     
 
+### Funcion para graficar el top 2 de las variables con mejor correlacion
 def plot_regresion_top2(df, col1, col2, col3):
     correlacion = df.corr()
     a = round(correlacion.iloc[0,1],5)
@@ -79,6 +82,7 @@ def plot_regresion_top2(df, col1, col2, col3):
 
 
 
+###  Funcion de modelo de entrenamiento con betas fijos 
 def training_model(vx, vy, b0, b1):
     n = len(vx)
     resultados = {}
@@ -94,6 +98,7 @@ def training_model(vx, vy, b0, b1):
 
 
 
+### Creacion de modelo propio con betas automaticos segun evolucion de entrenamiento
 def gradiant_training(vx, vy, b0, b1, alpha, epochs):
     n = len(vx)
     g_a = np.array([])
@@ -127,7 +132,8 @@ def gradiant_training(vx, vy, b0, b1, alpha, epochs):
             
 
         
-        
+
+### Funcion para graficar dispersion de valores reales  del modelo original      
 def graf_disper_y_valores_reales(x,y):          
     plt.scatter(x,y, color = '#20DF97')
     plt.xlabel("Estimaciones")
@@ -137,6 +143,7 @@ def graf_disper_y_valores_reales(x,y):
 
 
 
+### Funcion para graficar la prediccion con n iteraciones
 def graf_pred_n_epoch(x, y, b0, b1, epochs):
     plt.scatter(x, y,color = '#20DF97')
     pred_x = [1, max(x)]
@@ -150,20 +157,21 @@ def graf_pred_n_epoch(x, y, b0, b1, epochs):
 
 
 
+### Funcion para graficar evolucion de error minimo (RMSE)
 def fn_plt_error (df):
     plt.figure(figsize = (16,6))
     plt.plot(df, 'm--')
     plt.title('Evolución Error Mínimo', fontSize = 16)
     plt.xlabel('Iteracion')
     plt.ylabel('RMSE')
-    plt.annotate('Inicio Regulacion Error Miimo', xy=(250, 50000), xytext=(4000, 50000),
-            arrowprops=dict(facecolor='blue', shrink=0.05),
+    plt.annotate('Inicio Regulacion Error Miimo', xy=(250, 50000), xytext=(4000, 70000),
+            arrowprops=dict(facecolor='blue', shrink=0.10),
             )
     plt.show()  
         
 
 
-
+### Funcion grafico comparativo de los datos modelo propio vs modelo skl
 def graf_mdl_vs_skl(xt, yt, pred, vx, b0, b1):
     plt.scatter(xt, yt, color = '#20DF97')
     plt.plot(xt, pred, color = 'red', linestyle = 'dashed')
@@ -174,6 +182,7 @@ def graf_mdl_vs_skl(xt, yt, pred, vx, b0, b1):
 
 
 
+### Funcion para crear Data Frame con los valores del RMS data test
 def df_errores(xt, yt, b0, b1):
     df = training_model(xt, yt, b0, b1)        
     df = pd.DataFrame.from_dict(df, orient = 'index')
@@ -182,7 +191,7 @@ def df_errores(xt, yt, b0, b1):
 
 
 
-
+### Funcion Grafica comparativa de distribucion de errores ambos modelos
 def graf_dis_dens_errors_mdls(gy_mdl,  gy_skl):
     sns.set_style("dark")
     sns.kdeplot(np.asarray(gy_mdl)[0], label = 'Error Modelo Manual', color = '#BE9ED3')
